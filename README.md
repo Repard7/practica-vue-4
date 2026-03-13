@@ -28,3 +28,15 @@
 
 ## Автор
 Студент 3 курса Грачев Ростислав Эдуардович
+
+## Установка и запуск
+
+1. Клонируйте репозиторий:
+   git clone https://github.com/your-username/vue-shop.git
+   cd vue-shop
+
+2. Установите зависимости
+    npm install
+
+3. Запустите проект
+    npm run serve
