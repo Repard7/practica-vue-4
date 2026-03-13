@@ -144,6 +144,12 @@ button:first-of-type {
   margin-top: 0;
 }
 
+button:not(.remove-button):hover {
+  background-color: #2c8d5e; /* темнее при наведении */
+  transform: scale(1.02); /* небольшое увеличение */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
 .remove-button {
   background-color: #ffb3b3; /* мягкий красный */
   color: #5c3c3c;

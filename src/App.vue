@@ -1,7 +1,6 @@
 <template>
   <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+    <router-link to="/">Home</router-link>
     <template v-if="$store.getters.isAuthenticated">
       | <router-link to="/cart">Корзина</router-link> |
       <router-link to="/orders">Заказы</router-link> |
