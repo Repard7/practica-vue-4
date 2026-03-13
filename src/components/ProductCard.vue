@@ -134,13 +134,13 @@ button:first-of-type {
 }
 
 button:not(.remove-button):hover {
-  background-color: #2c8d5e; /* темнее при наведении */
-  transform: scale(1.02); /* небольшое увеличение */
+  background-color: #2c8d5e;
+  transform: scale(1.02);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .remove-button {
-  background-color: #ffb3b3; /* мягкий красный */
+  background-color: #ffb3b3;
   color: #5c3c3c;
 }
 

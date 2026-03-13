@@ -26,11 +26,11 @@ export default createStore({
             price: item.price,
             image: item.image,
             quantity: 0,
-            ids: [] // обязательно добавляем массив
+            ids: []
           };
         }
         groups[key].quantity += 1;
-        groups[key].ids.push(item.id); // добавляем идентификатор записи корзины
+        groups[key].ids.push(item.id);
       });
       return Object.values(groups);
     },
@@ -52,7 +52,7 @@ export default createStore({
     SET_ORDERS: (state, orders) => {
       state.orders = orders;
     },
-    CLEAR_CART: (state) => { // можно использовать после оформления, но можно просто обновить корзину FETCH_CART
+    CLEAR_CART: (state) => {
       state.cart = [];
     },
   },
@@ -142,7 +142,6 @@ export default createStore({
           return response.json();
         })
         .then(data => {
-          // После успешного добавления обновляем корзину
           dispatch('FETCH_CART');
           return data;
         })
@@ -165,7 +164,7 @@ export default createStore({
           return response.json();
         })
         .then(() => {
-          dispatch('FETCH_CART'); // обновляем список после удаления
+          dispatch('FETCH_CART');
         })
         .catch(error => {
           console.error('Ошибка удаления:', error);
@@ -183,7 +182,7 @@ export default createStore({
           return response.json();
         })
         .then(data => {
-          commit('SET_ORDERS', data.data); // предполагаем, что data.data - массив заказов
+          commit('SET_ORDERS', data.data);
         });
     },
 
@@ -198,7 +197,6 @@ export default createStore({
           return response.json();
         })
         .then(data => {
-          // После оформления корзина на сервере очищается, поэтому нужно обновить корзину на клиенте
           dispatch('FETCH_CART');
           return data;
         });

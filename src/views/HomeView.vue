@@ -23,7 +23,6 @@ export default {
     ...mapState(["products"]),
   },
   created() {
-    // Загружаем товары при создании компонента, если их ещё нет
     if (!this.products.length) {
       this.$store.dispatch("FETCH_PRODUCTS");
     }

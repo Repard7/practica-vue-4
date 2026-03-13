@@ -10,7 +10,6 @@ export const loginRequest = (user) => {
     })
         .then((response) => {
             if (!response.ok) {
-                // Если ответ не успешный, пробуем получить ошибку от сервера и реджектим
                 return response.json().then(err => Promise.reject(err));
             }
             return response.json();
