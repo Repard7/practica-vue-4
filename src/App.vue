@@ -2,9 +2,13 @@
   <nav>
     <router-link to="/">Home</router-link> |
     <router-link to="/about">About</router-link>
-    <span v-if="$store.getters.isAuthenticated">
+    <template v-if="$store.getters.isAuthenticated">
       | <a href="#" @click.prevent="logout">Выйти</a>
-    </span>
+    </template>
+    <template v-else>
+      | <router-link to="/login">Вход</router-link> |
+      <router-link to="/register">Регистрация</router-link>
+    </template>
   </nav>
   <router-view />
 </template>
