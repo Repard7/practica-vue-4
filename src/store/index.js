@@ -1,16 +1,18 @@
 import { createStore } from 'vuex'
 import { loginRequest, registerRequest } from '@/utils/api.js'
 
-const API = process.env.VUE_APP_API; // базовая ссылка на API
+const API = process.env.VUE_APP_API;
 
 export default createStore({
   state: {
     token: localStorage.getItem('myAppToken') || '',
-    products: [], // список товаров
+    products: [],
+    cart: []
   },
   getters: {
     isAuthenticated: (state) => !!state.token,
     products: (state) => state.products,
+    cart: (state) => state.cart,
   },
   mutations: {
     AUTH_SUCCESS: (state, token) => {
@@ -21,6 +23,9 @@ export default createStore({
     },
     SET_PRODUCTS: (state, products) => {
       state.products = products;
+    },
+    SET_CART: (state, items) => {
+      state.cart = items;
     },
   },
   actions: {
@@ -39,7 +44,6 @@ export default createStore({
     REGISTER_REQUEST: ({ commit }, user) => {
       return registerRequest(user)
         .then((token) => {
-          // После регистрации не логиним автоматически
         })
         .catch((error) => {
           throw error;
@@ -50,7 +54,7 @@ export default createStore({
       localStorage.removeItem('myAppToken');
       return Promise.resolve();
     },
-    // Новое действие для загрузки товаров
+
     FETCH_PRODUCTS: ({ commit }) => {
       return fetch(`${API}/products`)
         .then(response => {
@@ -60,10 +64,33 @@ export default createStore({
           return response.json();
         })
         .then(data => {
-          commit('SET_PRODUCTS', data.data); // предполагаем, что данные в data.data
+          commit('SET_PRODUCTS', data.data); 
         })
         .catch(error => {
           console.error('Ошибка FETCH_PRODUCTS:', error);
+          throw error;
+        });
+    },
+    FETCH_CART: ({ commit, state }) => {
+      const API = process.env.VUE_APP_API.replace(/\/$/, '');
+      return fetch(`${API}/cart`, {
+        headers: {
+          'Authorization': `Bearer ${state.token}`
+        }
+      })
+        .then(response => {
+          if (!response.ok) {
+            if (response.status === 401) {
+            }
+            throw new Error('Ошибка загрузки корзины');
+          }
+          return response.json();
+        })
+        .then(data => {
+          commit('SET_CART', data.data);
+        })
+        .catch(error => {
+          console.error('FETCH_CART error:', error);
           throw error;
         });
     }

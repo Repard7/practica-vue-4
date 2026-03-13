@@ -3,7 +3,8 @@
     <router-link to="/">Home</router-link> |
     <router-link to="/about">About</router-link>
     <template v-if="$store.getters.isAuthenticated">
-      | <a href="#" @click.prevent="logout">Выйти</a>
+      | <router-link to="/cart">Корзина</router-link> |
+      <a href="#" @click.prevent="logout">Выйти</a>
     </template>
     <template v-else>
       | <router-link to="/login">Вход</router-link> |
