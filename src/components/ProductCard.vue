@@ -20,13 +20,6 @@
     >
       В корзину
     </button>
-    <button
-      v-if="showRemoveButton"
-      @click="$emit('remove')"
-      class="remove-button"
-    >
-      Удалить один
-    </button>
   </div>
 </template>
 
@@ -39,10 +32,6 @@ export default {
       required: true,
     },
     hideAddToCart: {
-      type: Boolean,
-      default: false,
-    },
-    showRemoveButton: {
       type: Boolean,
       default: false,
     },

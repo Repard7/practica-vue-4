@@ -1,26 +1,31 @@
 <template>
   <div class="cart">
     <h1>Корзина</h1>
-    <div v-if="groupedCart.length" class="cart-content">
-      <div class="cart-grid">
+    <div v-if="groupedCart.length" class="cart-grid">
+      <div
+        v-for="group in groupedCart"
+        :key="group.product_id"
+        class="cart-item-wrapper"
+      >
         <ProductCard
-          v-for="group in groupedCart"
-          :key="group.product_id"
           :product="group"
           :hideAddToCart="true"
-          :showRemoveButton="true"
-          @remove="removeOne(group)"
+          :showRemoveButton="false"
         />
-      </div>
-      <div class="cart-footer">
-        <div class="total">Итого: {{ totalPrice }} ₽</div>
-        <button @click="checkout" class="checkout-button">
-          Оформить заказ
-        </button>
+        <div class="item-controls">
+          <button @click="removeOne(group)" class="control-button remove">
+            −
+          </button>
+          <span class="quantity">{{ group.quantity }}</span>
+          <button @click="addOne(group)" class="control-button add">+</button>
+        </div>
       </div>
     </div>
     <div v-else class="empty-cart">
       <p>Корзина пуста</p>
+    </div>
+    <div v-if="groupedCart.length" class="cart-footer">
+      <button @click="checkout" class="checkout-button">Оформить заказ</button>
     </div>
   </div>
 </template>
@@ -31,15 +36,7 @@ import ProductCard from "@/components/ProductCard.vue";
 
 export default {
   components: { ProductCard },
-  computed: {
-    ...mapGetters(["groupedCart"]),
-    totalPrice() {
-      return this.groupedCart.reduce(
-        (sum, item) => sum + item.price * item.quantity,
-        0
-      );
-    },
-  },
+  computed: mapGetters(["groupedCart"]),
   methods: {
     removeOne(group) {
       if (group.ids && group.ids.length > 0) {
@@ -49,18 +46,16 @@ export default {
           .catch(() => alert("Не удалось удалить товар"));
       }
     },
+    addOne(group) {
+      this.$store
+        .dispatch("ADD_TO_CART", group.product_id)
+        .catch(() => alert("Не удалось добавить товар"));
+    },
     checkout() {
       this.$store
         .dispatch("CREATE_ORDER")
-        .then(() => {
-          this.$router.push("/orders");
-        })
-        .catch((error) => {
-          console.error("Ошибка оформления заказа:", error);
-          alert(
-            "Не удалось оформить заказ. Возможно, корзина пуста или произошла ошибка."
-          );
-        });
+        .then(() => this.$router.push("/orders"))
+        .catch(() => alert("Не удалось оформить заказ"));
     },
   },
   created() {
@@ -89,36 +84,71 @@ h1 {
   justify-content: center;
 }
 
-.cart-footer {
-  margin-top: 30px;
+.cart-item-wrapper {
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
   align-items: center;
-  gap: 20px;
-  padding: 20px;
-  background: #f8f9fa;
-  border-radius: 12px;
-  border: 1px solid #e9ecef;
 }
 
-.total {
-  font-size: 1.3rem;
+.item-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.control-button {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 4px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.control-button.remove {
+  background-color: #ffb3b3;
+  color: #5c3c3c;
+}
+
+.control-button.remove:hover {
+  background-color: #ff9999;
+}
+
+.control-button.add {
+  background-color: #42b983;
+  color: white;
+}
+
+.control-button.add:hover {
+  background-color: #2c8d5e;
+}
+
+.quantity {
   font-weight: bold;
+  min-width: 30px;
+  text-align: center;
+}
+
+.cart-footer {
+  margin-top: 30px;
+  text-align: right;
 }
 
 .checkout-button {
   background-color: #42b983;
   color: white;
   border: none;
-  padding: 10px 30px;
-  border-radius: 6px;
-  font-size: 1.1rem;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.2s;
 }
 
 .checkout-button:hover {
-  background-color: #369f6e;
+  background-color: #2c8d5e;
 }
 
 .empty-cart {
