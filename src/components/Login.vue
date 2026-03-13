@@ -1,12 +1,15 @@
 <template>
   <form class="login" @submit.prevent="login">
     <h1>Sign in</h1>
-    <label>User name</label>
-    <input type="text" required v-model="username" />
+    <label>Email</label>
+    <input type="email" required v-model="email" />
     <label>Password</label>
     <input type="password" required v-model="password" />
     <hr />
     <button type="submit">Login</button>
+    <p>
+      Нет аккаунта? <router-link to="/register">Зарегистрироваться</router-link>
+    </p>
   </form>
 </template>
 
@@ -32,21 +35,27 @@ hr {
 export default {
   data() {
     return {
-      username: "",
+      email: "",
       password: "",
     };
   },
   methods: {
     login() {
       const userData = {
-        username: this.username,
+        email: this.email,
         password: this.password,
       };
 
       this.$store
-        .dispatch(AUTH_REQUEST, userData)
-        .then(() => this.$router.push("/"));
+        .dispatch("AUTH_REQUEST", userData)
+        .then(() => this.$router.push("/"))
+        .catch((error) => {
+          // Обработка ошибки (например, показать сообщение)
+          console.error("Ошибка входа:", error);
+          alert("Неверный email или пароль");
+        });
     },
   },
 };
 </script>
+

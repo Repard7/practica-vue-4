@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import store from '@/store';
+import store from '@/store'
 
 const ifNotAuthenticated = (to, from, next) => {
   if (!store.getters.isAuthenticated) {
@@ -21,27 +21,25 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: function () {
-      return import('../views/HomeView.vue')
-    },
+    component: () => import('../views/HomeView.vue'),
     beforeEnter: ifAuthenticated,
   },
-
   {
     path: '/login',
     name: 'login',
-    component: function () {
-      return import('../components/Login.vue')
-    },
+    component: () => import('../components/Login.vue'),
     beforeEnter: ifNotAuthenticated,
   },
-
+  {
+    path: '/register',
+    name: 'register',
+    component: () => import('../components/Register.vue'),
+    beforeEnter: ifNotAuthenticated,
+  },
   {
     path: '/about',
     name: 'about',
-    component: function () {
-      return import('../views/AboutView.vue')
-    }
+    component: () => import('../views/AboutView.vue')
   }
 ]
 
@@ -49,6 +47,5 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 })
-
 
 export default router

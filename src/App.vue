@@ -2,9 +2,24 @@
   <nav>
     <router-link to="/">Home</router-link> |
     <router-link to="/about">About</router-link>
+    <span v-if="$store.getters.isAuthenticated">
+      | <a href="#" @click.prevent="logout">Выйти</a>
+    </span>
   </nav>
   <router-view />
 </template>
+
+<script>
+export default {
+  methods: {
+    logout() {
+      this.$store.dispatch("LOGOUT").then(() => {
+        this.$router.push("/login");
+      });
+    },
+  },
+};
+</script>
 
 <style>
 #app {

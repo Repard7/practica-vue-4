@@ -8,9 +8,29 @@ export const loginRequest = (user) => {
         },
         body: JSON.stringify(user),
     })
-        .then((response) => response.json())
-        .then((result) => resolve(result.data.user_token))
-        .catch((error) => {
-            reject(error);
-        });
-}
+        .then((response) => {
+            if (!response.ok) {
+                // Если ответ не успешный, пробуем получить ошибку от сервера и реджектим
+                return response.json().then(err => Promise.reject(err));
+            }
+            return response.json();
+        })
+        .then((result) => result.data.user_token);
+};
+
+export const registerRequest = (user) => {
+    return fetch(`${API}/signup`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8',
+        },
+        body: JSON.stringify(user),
+    })
+        .then((response) => {
+            if (!response.ok) {
+                return response.json().then(err => Promise.reject(err));
+            }
+            return response.json();
+        })
+        .then((result) => result.data.user_token);
+};
