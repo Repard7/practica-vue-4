@@ -7,6 +7,8 @@
         :key="group.product_id"
         :product="group"
         :hideAddToCart="true"
+        :showRemoveButton="true"
+        @remove="removeOne(group)"
       />
     </div>
     <div v-else class="empty-cart">
@@ -22,6 +24,21 @@ import ProductCard from "@/components/ProductCard.vue";
 export default {
   components: { ProductCard },
   computed: mapGetters(["groupedCart"]),
+  methods: {
+    removeOne(group) {
+      if (group.ids && group.ids.length > 0) {
+        const idToRemove = group.ids[0]; // первый идентификатор записи в корзине
+        this.$store
+          .dispatch("REMOVE_ONE_FROM_CART", idToRemove)
+          .catch((error) => {
+            console.error("Ошибка удаления:", error);
+            alert("Не удалось удалить товар");
+          });
+      } else {
+        console.warn("Нет id для удаления", group);
+      }
+    },
+  },
   created() {
     this.$store.dispatch("FETCH_CART");
   },
@@ -42,10 +59,10 @@ h1 {
 }
 
 .cart-grid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 24px; /* увеличенный отступ между карточками */
   justify-content: center;
-  gap: 20px;
 }
 
 .empty-cart {

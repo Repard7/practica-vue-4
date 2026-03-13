@@ -20,6 +20,13 @@
     >
       В корзину
     </button>
+    <button
+      v-if="showRemoveButton"
+      @click="$emit('remove')"
+      class="remove-button"
+    >
+      Удалить один
+    </button>
   </div>
 </template>
 
@@ -32,6 +39,10 @@ export default {
       required: true,
     },
     hideAddToCart: {
+      type: Boolean,
+      default: false,
+    },
+    showRemoveButton: {
       type: Boolean,
       default: false,
     },
@@ -65,12 +76,13 @@ export default {
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 15px;
-  margin: 10px;
+  margin: 0;
   width: 250px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   position: relative;
+  background: white;
 }
 
 .image-container {
@@ -115,9 +127,29 @@ export default {
   font-weight: bold;
   color: #42b983;
   margin-top: auto;
+  margin-bottom: 10px;
 }
 
 button {
-  margin-top: 10px;
+  margin-top: 5px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+button:first-of-type {
+  margin-top: 0;
+}
+
+.remove-button {
+  background-color: #ffb3b3; /* мягкий красный */
+  color: #5c3c3c;
+}
+
+.remove-button:hover {
+  background-color: #ff9999;
 }
 </style>

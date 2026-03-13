@@ -24,10 +24,12 @@ export default createStore({
             description: item.description,
             price: item.price,
             image: item.image,
-            quantity: 0
+            quantity: 0,
+            ids: [] // обязательно добавляем массив
           };
         }
         groups[key].quantity += 1;
+        groups[key].ids.push(item.id); // добавляем идентификатор записи корзины
       });
       return Object.values(groups);
     }
@@ -59,6 +61,7 @@ export default createStore({
           throw error;
         });
     },
+
     REGISTER_REQUEST: ({ commit }, user) => {
       return registerRequest(user)
         .then((token) => {
@@ -137,6 +140,27 @@ export default createStore({
         })
         .catch(error => {
           console.error('Ошибка добавления в корзину:', error);
+          throw error;
+        });
+    },
+
+    REMOVE_ONE_FROM_CART: ({ state, dispatch }, cartItemId) => {
+      const API = process.env.VUE_APP_API.replace(/\/$/, '');
+      return fetch(`${API}/cart/${cartItemId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${state.token}` }
+      })
+        .then(response => {
+          if (!response.ok) {
+            return response.json().then(err => Promise.reject(err));
+          }
+          return response.json();
+        })
+        .then(() => {
+          dispatch('FETCH_CART'); // обновляем список после удаления
+        })
+        .catch(error => {
+          console.error('Ошибка удаления:', error);
           throw error;
         });
     }
