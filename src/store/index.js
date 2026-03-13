@@ -13,6 +13,24 @@ export default createStore({
     isAuthenticated: (state) => !!state.token,
     products: (state) => state.products,
     cart: (state) => state.cart,
+    groupedCart: (state) => {
+      const groups = {};
+      state.cart.forEach(item => {
+        const key = item.product_id;
+        if (!groups[key]) {
+          groups[key] = {
+            product_id: item.product_id,
+            name: item.name,
+            description: item.description,
+            price: item.price,
+            image: item.image,
+            quantity: 0
+          };
+        }
+        groups[key].quantity += 1;
+      });
+      return Object.values(groups);
+    }
   },
   mutations: {
     AUTH_SUCCESS: (state, token) => {
