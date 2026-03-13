@@ -1,13 +1,13 @@
 <template>
   <div class="cart">
     <h1>Корзина</h1>
-    <div v-if="cart.length">
-      <div v-for="item in cart" :key="item.id" class="cart-item">
-        <h3>{{ item.name }}</h3>
-        <p>{{ item.description }}</p>
-        <p class="price">{{ item.price }} ₽</p>
-        <!-- Пока без группировки и кнопок, просто отображаем каждый элемент -->
-      </div>
+    <div v-if="cart.length" class="cart-list">
+      <ProductCard
+        v-for="item in cart"
+        :key="item.id"
+        :product="item"
+        :hideAddToCart="true"
+      />
     </div>
     <div v-else>
       <p>Корзина пуста</p>
@@ -17,12 +17,13 @@
 
 <script>
 import { mapGetters } from "vuex";
+import ProductCard from "@/components/ProductCard.vue";
 
 export default {
   name: "CartView",
+  components: { ProductCard },
   computed: mapGetters(["cart"]),
   created() {
-    // Загружаем корзину при переходе на страницу
     this.$store.dispatch("FETCH_CART");
   },
 };
@@ -30,24 +31,14 @@ export default {
 
 <style scoped>
 .cart {
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
 }
-.cart-item {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 10px;
+.cart-list {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.cart-item h3 {
-  margin: 0;
-}
-.price {
-  font-weight: bold;
-  color: #42b983;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
 }
 </style>

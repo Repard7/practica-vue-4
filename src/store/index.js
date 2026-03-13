@@ -49,6 +49,7 @@ export default createStore({
           throw error;
         });
     },
+
     LOGOUT: ({ commit }) => {
       commit('AUTH_ERROR');
       localStorage.removeItem('myAppToken');
@@ -64,13 +65,14 @@ export default createStore({
           return response.json();
         })
         .then(data => {
-          commit('SET_PRODUCTS', data.data); 
+          commit('SET_PRODUCTS', data.data);
         })
         .catch(error => {
           console.error('Ошибка FETCH_PRODUCTS:', error);
           throw error;
         });
     },
+
     FETCH_CART: ({ commit, state }) => {
       const API = process.env.VUE_APP_API.replace(/\/$/, '');
       return fetch(`${API}/cart`, {
@@ -91,6 +93,32 @@ export default createStore({
         })
         .catch(error => {
           console.error('FETCH_CART error:', error);
+          throw error;
+        });
+    },
+
+    ADD_TO_CART: ({ commit, dispatch, state }, productId) => {
+      const API = process.env.VUE_APP_API.replace(/\/$/, '');
+      return fetch(`${API}/cart/${productId}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${state.token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(response => {
+          if (!response.ok) {
+            return response.json().then(err => Promise.reject(err));
+          }
+          return response.json();
+        })
+        .then(data => {
+          // После успешного добавления обновляем корзину
+          dispatch('FETCH_CART');
+          return data;
+        })
+        .catch(error => {
+          console.error('Ошибка добавления в корзину:', error);
           throw error;
         });
     }

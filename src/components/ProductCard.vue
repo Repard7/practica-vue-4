@@ -9,7 +9,12 @@
     <h3>{{ product.name }}</h3>
     <p>{{ product.description }}</p>
     <p class="price">{{ product.price }} ₽</p>
-    <button v-if="$store.getters.isAuthenticated">В корзину</button>
+    <button
+      v-if="$store.getters.isAuthenticated && !hideAddToCart"
+      @click="addToCart"
+    >
+      В корзину
+    </button>
   </div>
 </template>
 
@@ -20,20 +25,30 @@ export default {
     product: {
       type: Object,
       required: true
+    },
+    hideAddToCart: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
     imageUrl() {
-      // Базовый URL для изображений (можно вынести в .env)
       const imgBase = process.env.VUE_APP_IMG_BASE_URL || 'http://lifestealer86.ru';
-      // Убираем возможный начальный слеш у пути изображения
       const imagePath = this.product.image.replace(/^\//, '');
       return `${imgBase}/${imagePath}`;
     }
   },
   methods: {
+    addToCart() {
+      this.$store.dispatch('ADD_TO_CART', this.product.id)
+        .then(() => {
+          alert('Товар добавлен в корзину');
+        })
+        .catch(() => {
+          alert('Не удалось добавить товар. Возможно, он уже в корзине или произошла ошибка.');
+        });
+    },
     handleImageError(event) {
-      // Если картинка не загрузилась, показываем прозрачный пиксель (или можно оставить серый фон)
       event.target.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
     }
   }
@@ -47,7 +62,7 @@ export default {
   padding: 15px;
   margin: 10px;
   width: 250px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
 }
