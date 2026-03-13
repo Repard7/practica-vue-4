@@ -46,6 +46,12 @@ const routes = [
     component: () => import('../views/CartView.vue'),
     beforeEnter: ifAuthenticated,
   },
+  {
+    path: '/orders',
+    name: 'orders',
+    component: () => import('../views/OrdersView.vue'),
+    beforeEnter: ifAuthenticated,
+  }
 ]
 
 const router = createRouter({

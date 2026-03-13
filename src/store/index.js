@@ -7,7 +7,8 @@ export default createStore({
   state: {
     token: localStorage.getItem('myAppToken') || '',
     products: [],
-    cart: []
+    cart: [],
+    orders: []
   },
   getters: {
     isAuthenticated: (state) => !!state.token,
@@ -32,7 +33,8 @@ export default createStore({
         groups[key].ids.push(item.id); // добавляем идентификатор записи корзины
       });
       return Object.values(groups);
-    }
+    },
+    orders: (state) => state.orders,
   },
   mutations: {
     AUTH_SUCCESS: (state, token) => {
@@ -46,6 +48,12 @@ export default createStore({
     },
     SET_CART: (state, items) => {
       state.cart = items;
+    },
+    SET_ORDERS: (state, orders) => {
+      state.orders = orders;
+    },
+    CLEAR_CART: (state) => { // можно использовать после оформления, но можно просто обновить корзину FETCH_CART
+      state.cart = [];
     },
   },
   actions: {
@@ -162,6 +170,37 @@ export default createStore({
         .catch(error => {
           console.error('Ошибка удаления:', error);
           throw error;
+        });
+    },
+
+    FETCH_ORDERS: ({ commit, state }) => {
+      const API = process.env.VUE_APP_API.replace(/\/$/, '');
+      return fetch(`${API}/order`, {
+        headers: { 'Authorization': `Bearer ${state.token}` }
+      })
+        .then(response => {
+          if (!response.ok) return response.json().then(err => Promise.reject(err));
+          return response.json();
+        })
+        .then(data => {
+          commit('SET_ORDERS', data.data); // предполагаем, что data.data - массив заказов
+        });
+    },
+
+    CREATE_ORDER: ({ commit, state, dispatch }) => {
+      const API = process.env.VUE_APP_API.replace(/\/$/, '');
+      return fetch(`${API}/order`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${state.token}` }
+      })
+        .then(response => {
+          if (!response.ok) return response.json().then(err => Promise.reject(err));
+          return response.json();
+        })
+        .then(data => {
+          // После оформления корзина на сервере очищается, поэтому нужно обновить корзину на клиенте
+          dispatch('FETCH_CART');
+          return data;
         });
     }
   },

@@ -4,6 +4,7 @@
     <router-link to="/about">About</router-link>
     <template v-if="$store.getters.isAuthenticated">
       | <router-link to="/cart">Корзина</router-link> |
+      <router-link to="/orders">Заказы</router-link> |
       <a href="#" @click.prevent="logout">Выйти</a>
     </template>
     <template v-else>
