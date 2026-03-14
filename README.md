@@ -32,7 +32,7 @@
 ## Установка и запуск
 
 1. Клонируйте репозиторий:
-   git clone https://github.com/your-username/vue-shop.git
+   git clone https://github.com/Repard7/practica-vue-4
 
    cd vue-shop
 
