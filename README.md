@@ -34,7 +34,7 @@
 1. Клонируйте репозиторий:
    git clone https://github.com/Repard7/practica-vue-4
 
-   cd vue-shop
+   cd practica-vue-4
 
 2. Установите зависимости
     npm install
